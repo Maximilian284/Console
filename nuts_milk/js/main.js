@@ -28,7 +28,7 @@ function component(x, y, color, width, height) {
     this.velY = -1
     this.gravity = 0.4
     this.gravitySpeed = 0
-    this.speed = 60
+    this.speed = 8
     this.isGrounded = false
     this.jump = 0
 
@@ -102,7 +102,7 @@ function floor(x, y, color, width, height) {
 function Start() {
     gameArea.start() 
     player = new component(40,40,"white",50,50)
-    for(let i = 0; i < 7; i++){
+    for(let i = 0; i < 20; i++){
         floors[i] = new floor(i*50,window.innerHeight-100,"red",50,50)
     }
 }
@@ -135,8 +135,8 @@ document.addEventListener('keydown', function(event) {
     }else if(event.keyCode == 32 && isStarted && player.isGrounded){
         player.jump = 8
     }else if(event.keyCode == 39 && isStarted){
-        //player.jump = 8
+        player.x += player.speed
     }else if(event.keyCode == 37 && isStarted){
-        //player.jump = 8
+        player.x -= player.speed
     }
 },false ) 
