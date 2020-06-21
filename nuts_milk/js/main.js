@@ -2,6 +2,9 @@ let isStarted = false
 let player
 let floors = []
 let stairs = []
+let food = []
+let foods = 0
+let milks = 2
 
 let gameArea = {
     canvas : document.createElement("canvas"),
@@ -121,6 +124,8 @@ function Start() {
     stairs[0] = new object(200,window.innerHeight-150,"yellow",50,50)
     stairs[1] = new object(200,window.innerHeight-200,"yellow",50,50)
     stairs[2] = new object(200,window.innerHeight-250,"yellow",50,50)
+
+    food[0] = new object(400,window.innerHeight-150, "green",50,50)
 }
 
 function Update() {
@@ -135,9 +140,19 @@ function Update() {
         stairs.forEach(s =>{
             s.update()
         })
+        food.forEach(n =>{
+            n.update()
+
+            if(player.crashWith(n)){
+                foods += 1
+                food.splice(food.indexOf(n),1)
+            }
+        })
 
         player.newPos() 
-        player.update() 
+        player.update()
+
+        writeText("FOOD : " + foods, 30,30,"20px","white")
     }
 }
 
@@ -160,9 +175,9 @@ document.addEventListener('keydown', function(event) {
         x = player.speed
     }else if(event.keyCode == 37 && isStarted){
         x = - player.speed
-    }else if(event.keyCode == 38 && isStarted && player.stairs){
-        y = player.speed
     }else if(event.keyCode == 40 && isStarted && player.stairs){
+        y = player.speed
+    }else if(event.keyCode == 38 && isStarted && player.stairs){
         y = - player.speed
     }
 
