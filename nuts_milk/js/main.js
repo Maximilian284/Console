@@ -1,9 +1,11 @@
+//TODO : FOLLOW PLAYER ON STAIRS, AND Y
 let isStarted = false
 let player
 let nemesis
 let floors = []
 let stairs = []
 let food = []
+let springs = []
 let foods = 0
 let milks = 2
 
@@ -69,6 +71,19 @@ function component(x, y, color, width, height) {
                     }
                     this.isGrounded = true
                 }else if(this.crashWith(f,[this.velX,0])){
+                    this.velX = 0
+                }
+            })
+
+            springs.forEach(s =>{
+                if(this.crashWith(s,[0,this.velY + this.gravitySpeed - this.jump])){
+                    this.gravitySpeed = 0
+                    this.velY = 0
+                    if(!this.isGrounded){
+                        this.jump = this.speed + 4
+                    }
+                    this.isGrounded = true
+                }else if(this.crashWith(s,[this.velX,0])){
                     this.velX = 0
                 }
             })
@@ -162,6 +177,20 @@ function enemy(x, y, color, width, height){
                 }
             })
 
+            springs.forEach(f=>{
+                if(this.crashWith(f,[0,this.velY + this.gravitySpeed - this.jump])){
+                    this.gravitySpeed = 0
+                    this.velY = 0
+                    if(!this.isGrounded){
+                        this.jump = 0
+                    }
+                    this.isGrounded = true
+                }else if(this.crashWith(f,[this.velX,0])){
+                    this.velX = 0
+                    this.hasObstacle = true
+                }
+            })
+
             if(this.gravitySpeed > 0) this.isGrounded = false
 
             this.y += this.velY + this.gravitySpeed - this.jump
@@ -203,15 +232,21 @@ function Start() {
     player = new component(40,40,"white",50,50)
     nemesis = new enemy(300,40,"blue",50,50)
 
-    for(let i = 1; i < 20; i++){
+    for(let i = 1; i < 9; i++){
         floors[i] = new object(i*50,window.innerHeight-100,"red",50,50)
     }
     floors[0] = new object(100,window.innerHeight-150,"red",50,50)
     stairs[0] = new object(200,window.innerHeight-150,"yellow",50,50)
     stairs[1] = new object(200,window.innerHeight-200,"yellow",50,50)
     stairs[2] = new object(200,window.innerHeight-250,"yellow",50,50)
+    stairs[3] = new object(250,window.innerHeight-250,"yellow",50,50)
+    stairs[4] = new object(300,window.innerHeight-250,"yellow",50,50)
+    stairs[5] = new object(350,window.innerHeight-250,"yellow",50,50)
+    stairs[6] = new object(400,window.innerHeight-250,"yellow",50,50)
+    stairs[7] = new object(450,window.innerHeight-250,"yellow",50,50)
 
     food[0] = new object(400,window.innerHeight-150, "green",50,50)
+    springs[0] = new object(450,window.innerHeight-100,"brown",50,50)
 }
 
 function Update() {
@@ -233,6 +268,10 @@ function Update() {
                 foods += 1
                 food.splice(food.indexOf(n),1)
             }
+        })
+
+        springs.forEach(b => {
+            b.update()
         })
         
         nemesis.follow()
