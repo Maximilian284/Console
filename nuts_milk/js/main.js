@@ -1,5 +1,6 @@
 let isStarted = false
 let player
+let enemy
 let floors = []
 let stairs = []
 let food = []
@@ -29,6 +30,7 @@ function component(x, y, color, width, height) {
     this.height = height
     this.x = x
     this.y = y
+    this.velX = 0
     this.velY = -1
     this.gravity = 0.4
     this.gravitySpeed = 0
@@ -60,14 +62,15 @@ function component(x, y, color, width, height) {
             this.gravitySpeed += this.gravity
 
             floors.forEach(f=>{
-                if(this.crashWith(f)){
+                if(this.crashWith(f,[0,this.velY + this.gravitySpeed - this.jump])){
                     this.gravitySpeed = 0
                     this.velY = 0
                     if(!this.isGrounded){
                         this.jump = 0
                     }
                     this.isGrounded = true
-                    return
+                }else if(this.crashWith(f,[this.velX,0])){
+                    this.velX = 0
                 }
             })
 
@@ -76,7 +79,20 @@ function component(x, y, color, width, height) {
             this.y += this.velY + this.gravitySpeed - this.jump
             
             if(this.jump > 0) this.jump -= 0.1
+        }else{
+            floors.forEach(f=>{
+                if(this.crashWith(f,[0,this.velY])){
+                    this.velY = 0
+                }else if(this.crashWith(f,[this.velX,0])){
+                    this.velX = 0
+                }
+            })
+            this.y += this.velY
+            this.velY = 0
         }
+
+        this.x += this.velX
+        this.velX = 0
     }
 
     this.crashWith = function(otherobj, newPositions = [0,0]) {
@@ -88,7 +104,7 @@ function component(x, y, color, width, height) {
         let otherright = otherobj.x + (otherobj.width) 
         let othertop = otherobj.y 
         let otherbottom = otherobj.y + (otherobj.height) 
-        let crash = true 
+        let crash = true
         if ((mybottom < othertop) ||
         (mytop > otherbottom) ||
         (myright < otherleft) ||
@@ -109,7 +125,7 @@ function object(x, y, color, width, height) {
         if(isStarted){
             ctx = gameArea.context
             ctx.fillStyle = color
-            ctx.fillRect(this.x+6, this.y+6, this.width, this.height)
+            ctx.fillRect(this.x, this.y, this.width, this.height)
         }
     }
 }
@@ -118,9 +134,11 @@ function object(x, y, color, width, height) {
 function Start() {
     gameArea.start() 
     player = new component(40,40,"white",50,50)
-    for(let i = 0; i < 20; i++){
+    enemy = new component(300,40,"blue",50,50)
+    for(let i = 1; i < 20; i++){
         floors[i] = new object(i*50,window.innerHeight-100,"red",50,50)
     }
+    floors[0] = new object(100,window.innerHeight-150,"red",50,50)
     stairs[0] = new object(200,window.innerHeight-150,"yellow",50,50)
     stairs[1] = new object(200,window.innerHeight-200,"yellow",50,50)
     stairs[2] = new object(200,window.innerHeight-250,"yellow",50,50)
@@ -149,6 +167,8 @@ function Update() {
             }
         })
 
+        enemy.update()
+
         player.newPos() 
         player.update()
 
@@ -165,31 +185,18 @@ function writeText(text, x, y, size, color, style = "normal") {
 }
 
 document.addEventListener('keydown', function(event) {
-    let x = 0,y = 0,can = true
-
     if(event.keyCode == 13 && !isStarted) {
         isStarted = true
     }else if(event.keyCode == 32 && isStarted && player.isGrounded){
         player.jump = 8
     }else if(event.keyCode == 39 && isStarted){
-        x = player.speed
+        player.velX = player.speed
     }else if(event.keyCode == 37 && isStarted){
-        x = - player.speed
+        player.velX = -player.speed
     }else if(event.keyCode == 40 && isStarted && player.stairs){
-        y = player.speed
+        player.velY = player.speed
     }else if(event.keyCode == 38 && isStarted && player.stairs){
-        y = - player.speed
-    }
-
-    floors.forEach(f => {
-        if(player.crashWith(f,[x,y-6.1])){
-            can = false
-            return
-        }
-    })
-    if(can){
-        player.x += x
-        player.y += y
+        player.velY = -player.speed
     }
     
 },false ) 
