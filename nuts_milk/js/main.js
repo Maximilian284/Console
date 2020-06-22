@@ -1,6 +1,6 @@
 let isStarted = false
 let player
-let enemy
+let nemesis
 let floors = []
 let stairs = []
 let food = []
@@ -44,8 +44,7 @@ function component(x, y, color, width, height) {
             ctx = gameArea.context
             ctx.fillStyle = color
             ctx.fillRect(this.x, this.y, this.width, this.height)
-        }
-        
+        } 
     }
     this.newPos = function() {
         let a = false
@@ -130,11 +129,80 @@ function object(x, y, color, width, height) {
     }
 }
 
+function enemy(x, y, color, width, height){
+    component.call(this, x, y, color, width, height)
+    this.hasObstacle = false
+    this.speed = 0.5
+    
+    this.newPos = function() {
+        let a = false
+        stairs.forEach(s =>{
+            if(this.crashWith(s)){
+                this.stairs = true
+                a = true
+                return
+            }
+        })
+        if(!a) this.stairs = false
+
+        if(this.stairs == false){
+            this.gravitySpeed += this.gravity
+
+            floors.forEach(f=>{
+                if(this.crashWith(f,[0,this.velY + this.gravitySpeed - this.jump])){
+                    this.gravitySpeed = 0
+                    this.velY = 0
+                    if(!this.isGrounded){
+                        this.jump = 0
+                    }
+                    this.isGrounded = true
+                }else if(this.crashWith(f,[this.velX,0])){
+                    this.velX = 0
+                    this.hasObstacle = true
+                }
+            })
+
+            if(this.gravitySpeed > 0) this.isGrounded = false
+
+            this.y += this.velY + this.gravitySpeed - this.jump
+            
+            if(this.jump > 0) this.jump -= 0.1
+        }else{
+            floors.forEach(f=>{
+                if(this.crashWith(f,[0,this.velY])){
+                    this.velY = 0
+                }else if(this.crashWith(f,[this.velX,0])){
+                    this.velX = 0
+                }
+            })
+            this.y += this.velY
+            this.velY = 0
+        }
+
+        this.x += this.velX
+        this.velX = 0
+    }
+    
+
+    this.follow = function(){
+        if(player.x > this.x){
+            this.velX = this.speed
+        }else {
+            this.velX = -this.speed
+        }
+        if(this.hasObstacle){
+            this.jump = 8
+            this.hasObstacle = false
+        }
+    }
+}
+
 //main functions
 function Start() {
     gameArea.start() 
     player = new component(40,40,"white",50,50)
-    enemy = new component(300,40,"blue",50,50)
+    nemesis = new enemy(300,40,"blue",50,50)
+
     for(let i = 1; i < 20; i++){
         floors[i] = new object(i*50,window.innerHeight-100,"red",50,50)
     }
@@ -166,8 +234,10 @@ function Update() {
                 food.splice(food.indexOf(n),1)
             }
         })
-
-        enemy.update()
+        
+        nemesis.follow()
+        nemesis.newPos()
+        nemesis.update()
 
         player.newPos() 
         player.update()
