@@ -212,16 +212,20 @@ function enemy(x, y, color, width, height){
     this.calcPath = function(coords,map,player){
         let place = [coords[0] * 50 + 50,coords[1] * 50 + 50]
         let player_coords = this.calcPosMap(player.x,player.y)
+        let stairs_coord_x = findInMap(map,"stairs",coords)
+        
+        if(coords[0]-1 > -1 && map[coords[1]][coords[0]-1] == "1" && ((player_coords[0] < coords[0] && player_coords[1] == coords[1]) || (stairs_coord_x < coords[0]))){
+            place = [(coords[0]-1) * 50 + 50,coords[1] * 50 + 50]
+        }else if(coords[0]+1 < 6 && map[coords[1]][coords[0]+1] == "1" && ((player_coords[0] > coords[0] && player_coords[1] == coords[1]) || (stairs_coord_x > coords[0]))){
+            place = [(coords[0]+1) * 50 + 50,coords[1] * 50 + 50]
+        }
 
         if(coords[1]-1 > -1 && map[coords[1]-1][coords[0]] == "1" && player_coords[1] < coords[1]){
             place = [coords[0] * 50 + 50,(coords[1]-1) * 50 + 50]
         }else if(coords[1]+1 < 5 && map[coords[1]+1][coords[0]] == "1" && player_coords[1] > coords[1]){
             place = [coords[0] * 50 + 50,(coords[1]+1) * 50 + 50]
-        }else if(coords[0]-1 > -1 && map[coords[1]][coords[0]-1] == "1" && player_coords[0] < coords[0]){
-            place = [(coords[0]-1) * 50 + 50,coords[1] * 50 + 50]
-        }else if(coords[0]+1 < 6 && map[coords[1]][coords[0]+1] == "1" && player_coords[0] > coords[0]){
-            place = [(coords[0]+1) * 50 + 50,coords[1] * 50 + 50]
         }
+
         return this.calcPosMap(place[0],place[1])
     }
 
@@ -255,3 +259,21 @@ function enemy(x, y, color, width, height){
 function roundToTen(int){
     return parseInt(int.toString().substring(0,int.toString().length-1) + "0")
 }
+
+function findInMap(map,what,coords){
+    if(what == "stairs"){
+        let x = 0
+        let res = -1
+        if(coords[1] - 1 >= 0){
+            map[coords[1] - 1].split("").forEach(i =>{
+                if(i == "1"){
+                    res = x
+                }
+                x++
+            })
+            return res
+        }
+        
+    }
+}
+
