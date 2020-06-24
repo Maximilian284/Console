@@ -14,7 +14,7 @@ function component(x, y, color, width, height) {
     this.velY = -1
     this.gravity = 0.4
     this.gravitySpeed = 0
-    this.speed = 8
+    this.speed = 10
     this.isGrounded = false
     this.jump = 0
     this.stairs = false
@@ -92,10 +92,10 @@ function component(x, y, color, width, height) {
         let myright = this.x + (this.width) + newPositions[0]
         let mytop = this.y + newPositions[1]
         let mybottom = this.y + (this.height) + newPositions[1]
-        let otherleft = otherobj.x 
-        let otherright = otherobj.x + (otherobj.width) 
-        let othertop = otherobj.y 
-        let otherbottom = otherobj.y + (otherobj.height) 
+        let otherleft = otherobj.x +1
+        let otherright = otherobj.x + (otherobj.width) -1
+        let othertop = otherobj.y +1
+        let otherbottom = otherobj.y + (otherobj.height) -1
         let crash = true
         if ((mybottom < othertop) ||
         (mytop > otherbottom) ||
@@ -125,73 +125,133 @@ function object(x, y, color, width, height) {
 function enemy(x, y, color, width, height){
     component.call(this, x, y, color, width, height)
     this.hasObstacle = false
-    this.speed = 0.5
+    this.speed = 1
+    this.target = []
+    this.position = []
+    this.isMoving = 0 
+    // 1
+    //402
+    // 3
 
     this.newPos = function() {
-        let a = false
-        stairs.forEach(s =>{
-            if(this.crashWith(s)){
-                this.stairs = true
-                a = true
-                return
+        floors.forEach(f =>{
+            if(this.crashWith(f,[0,this.velY])){
+                this.velY = 0
+                if(this.position[0] > this.target[0]){
+                    this.velX = -0.5
+                }else{
+                    this.velX = 0.5
+                }
+                floors.forEach(f =>{
+                    if(this.crashWith(f,[this.velX])) this.velX = 0
+                })
+
+            }else if(this.crashWith(f,[this.velX,0])){
+                this.velX = 0
+                if(this.position[1] > this.target[1]){
+                    this.velY = -6
+                }else{
+                    this.velY = 6
+                }
+                floors.forEach(f =>{
+                    if(this.crashWith(f,[0,this.velY])) this.velY = 0
+                })
+                
             }
         })
-        if(!a) this.stairs = false
-
-        if(this.stairs == false){
-            this.gravitySpeed += this.gravity
-
-            floors.forEach(f=>{
-                if(this.crashWith(f,[0,this.velY + this.gravitySpeed - this.jump])){
-                    this.gravitySpeed = 0
-                    this.velY = 0
-                    if(!this.isGrounded){
-                        this.jump = 0
-                    }
-                    this.isGrounded = true
-                }else if(this.crashWith(f,[this.velX,0])){
-                    this.velX = 0
-                    this.hasObstacle = true
-                }
-            })
-
-            springs.forEach(f=>{
-                if(this.crashWith(f,[0,this.velY + this.gravitySpeed - this.jump])){
-                    this.gravitySpeed = 0
-                    this.velY = 0
-                    if(!this.isGrounded){
-                        this.jump = 0
-                    }
-                    this.isGrounded = true
-                }else if(this.crashWith(f,[this.velX,0])){
-                    this.velX = 0
-                    this.hasObstacle = true
-                }
-            })
-
-            if(this.gravitySpeed > 0) this.isGrounded = false
-
-            this.y += this.velY + this.gravitySpeed - this.jump
-            
-            if(this.jump > 0) this.jump -= 0.1
-        }else{
-            floors.forEach(f=>{
-                if(this.crashWith(f,[0,this.velY])){
-                    this.velY = 0
-                }else if(this.crashWith(f,[this.velX,0])){
-                    this.velX = 0
-                }
-            })
-            this.y += this.velY
-            this.velY = 0
-        }
 
         this.x += this.velX
+        this.y += this.velY
+        this.velY = 0
         this.velX = 0
     }
 
+    this.follow = function(map,player){
+        let p = this.calcPosMap()
+        this.position = p
 
-    this.follow = function(map){
+        if(this.isMoving == 0){
+            let t = this.calcPath(p,map,player)
+            this.target = t
+            if(t[0] > p[0]){
+                this.velX = 0.5
+                this.isMoving = 2
+            }else if(t[0] < p[0]){
+                this.velX = -0.5
+                this.isMoving = 4
+            }
+    
+            if(t[1] > p[1]){
+                this.velY = 5
+                this.isMoving = 3
+            }else if(t[1] < p[1]){
+                this.velY = -5
+                this.isMoving = 1
+            }
+        }else{
+
+            if(this.target[0]*50+50 == this.x && this.target[1]*50+50 == this.y){
+                this.isMoving = 0
+            }
+
+            if(this.isMoving == 1){
+                this.velY = -5
+            }else if(this.isMoving == 2){
+                this.velX = 0.5
+            }else if(this.isMoving == 3){
+                this.velY = 5
+            }else if(this.isMoving == 4){
+                this.velX = -0.5
+            }
+
+            
+        }
         
     }
+
+    this.calcPath = function(coords,map,player){
+        let place = [coords[0] * 50 + 50,coords[1] * 50 + 50]
+        let player_coords = this.calcPosMap(player.x,player.y)
+
+        if(coords[1]-1 > -1 && map[coords[1]-1][coords[0]] == "1" && player_coords[1] < coords[1]){
+            place = [coords[0] * 50 + 50,(coords[1]-1) * 50 + 50]
+        }else if(coords[1]+1 < 5 && map[coords[1]+1][coords[0]] == "1" && player_coords[1] > coords[1]){
+            place = [coords[0] * 50 + 50,(coords[1]+1) * 50 + 50]
+        }else if(coords[0]-1 > -1 && map[coords[1]][coords[0]-1] == "1" && player_coords[0] < coords[0]){
+            place = [(coords[0]-1) * 50 + 50,coords[1] * 50 + 50]
+        }else if(coords[0]+1 < 6 && map[coords[1]][coords[0]+1] == "1" && player_coords[0] > coords[0]){
+            place = [(coords[0]+1) * 50 + 50,coords[1] * 50 + 50]
+        }
+        return this.calcPosMap(place[0],place[1])
+    }
+
+    this.calcPosMap = function(x1 = this.x,y1= this.y){
+        let coords = [0,0]
+        let consts = [0,50,100,150,200,250,300,350]
+        let x = x1 + this.width/2
+        let y = y1 + this.height/2
+        let done = [0,0]
+    
+        consts.forEach(e =>{
+            if(x < e && done[0] == 0){
+                coords[0] = (consts[consts.indexOf(e)-1]/50 )-1
+                done[0] = 1
+            }else if(x == e && done[0] == 0){
+                coords[0] = (consts[consts.indexOf(e)]/50 )-1
+                done[0] = 1
+            }
+            if(y < e && done[1] == 0){
+                coords[1] = (consts[consts.indexOf(e)-1]/50)-1
+                done[1] = 1
+            }else if(y < e && done[1] == 0){
+                coords[1] = (consts[consts.indexOf(e)]/50 )-1
+                done[1] = 1
+            }
+        })
+        return coords
+    }
+}
+
+function roundToTen(int){
+    return parseInt(int.toString().substring(0,int.toString().length-1) + "0")
 }

@@ -30,29 +30,32 @@ let gameArea = {
 //main functions
 function Start() {
     gameArea.start()
-    //io
-    
+    //io  
     baked_map[0] = getBaked(0)
 
     //initialize components
-    player = new component(40,40,"white",50,50)
-    nemesis = new enemy(300,40,"blue",50,50)
+    player = new component(300,50,"white",40,40)
+    nemesis = new enemy(250,250,"blue",40,40)
 
-    for(let i = 1; i < 9; i++){
-        floors[i] = new object(i*50,window.innerHeight-100,"red",50,50)
+    for(let i = 0; i < 4; i++){
+        floors[i] = new object(i*50 + 50,100,"red",50,50)
     }
-    floors[0] = new object(100,window.innerHeight-150,"red",50,50)
-    stairs[0] = new object(200,window.innerHeight-150,"yellow",50,50)
-    stairs[1] = new object(200,window.innerHeight-200,"yellow",50,50)
-    stairs[2] = new object(200,window.innerHeight-250,"yellow",50,50)
-    stairs[3] = new object(250,window.innerHeight-250,"yellow",50,50)
-    stairs[4] = new object(300,window.innerHeight-250,"yellow",50,50)
-    stairs[5] = new object(350,window.innerHeight-250,"yellow",50,50)
-    stairs[6] = new object(400,window.innerHeight-250,"yellow",50,50)
-    stairs[7] = new object(450,window.innerHeight-250,"yellow",50,50)
+    floors[4] = new object(300,100,"red",50,50)
+    floors[5] = new object(50,200,"red",50,50)
+    floors[6] = new object(100,200,"red",50,50)
+    floors[7] = new object(200,200,"red",50,50)
+    floors[8] = new object(250,200,"red",50,50)
+    floors[9] = new object(300,200,"red",50,50)
+    for(let i = 10; i < 16; i++){
+        floors[i] = new object((i-10)*50 + 50,300,"red",50,50)
+    }
 
-    food[0] = new object(400,window.innerHeight-150, "green",50,50)
-    springs[0] = new object(450,window.innerHeight-100,"brown",50,50)
+    stairs[0] = new object(250,100,"green",50,50)
+    stairs[1] = new object(250,150,"green",50,50)
+    stairs[2] = new object(150,150,"green",50,50)
+    stairs[3] = new object(150,200,"green",50,50)
+    stairs[4] = new object(150,250,"green",50,50)
+    stairs[4] = new object(250,50,"green",50,50)
 }
 
 function Update() {
@@ -80,9 +83,11 @@ function Update() {
             b.update()
         })
         
-        nemesis.follow(baked_map[0])
+        nemesis.follow(baked_map[0],player)
         nemesis.newPos()
         nemesis.update()
+
+        //console.log(nemesis.calcPath(nemesis.calcPosMap(),baked_map[0],player))
 
         player.newPos() 
         player.update()
