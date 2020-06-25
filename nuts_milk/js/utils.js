@@ -208,11 +208,11 @@ function enemy(x, y, color, width, height){
         }
         
     }
-
     this.calcPath = function(coords,map,player){
         let place = [coords[0] * 50 + 50,coords[1] * 50 + 50]
         let player_coords = this.calcPosMap(player.x,player.y)
-        let stairs_coord_x = findInMap(map,"stairs",coords)
+        let up = player_coords[1] < coords[1]
+        let stairs_coord_x = findInMap(map,"stairs",coords,up)
         
         if(coords[0]-1 > -1 && map[coords[1]][coords[0]-1] == "1" && ((player_coords[0] < coords[0] && player_coords[1] == coords[1]) || (stairs_coord_x < coords[0]))){
             place = [(coords[0]-1) * 50 + 50,coords[1] * 50 + 50]
@@ -260,19 +260,32 @@ function roundToTen(int){
     return parseInt(int.toString().substring(0,int.toString().length-1) + "0")
 }
 
-function findInMap(map,what,coords){
+function findInMap(map,what,coords,bool){
     if(what == "stairs"){
         let x = 0
         let res = -1
-        if(coords[1] - 1 >= 0){
-            map[coords[1] - 1].split("").forEach(i =>{
-                if(i == "1"){
-                    res = x
-                }
-                x++
-            })
-            return res
+        if(bool){
+            if(coords[1] - 1 >= 0){
+                map[coords[1] - 1].split("").forEach(i =>{
+                    if(i == "1"){
+                        res = x
+                    }
+                    x++
+                })
+                return res
+            }
+        }else{
+            if(coords[1] + 1 < map.length){
+                map[coords[1] + 1].split("").forEach(i =>{
+                    if(i == "1"){
+                        res = x
+                    }
+                    x++
+                })
+                return res
+            }
         }
+        
         
     }
 }
