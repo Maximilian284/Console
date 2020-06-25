@@ -7,6 +7,7 @@ let food = []
 let springs = []
 let foods = 0
 let milks = 2
+let house
 
 let baked_map = []
 
@@ -34,7 +35,8 @@ function Start() {
     baked_map[0] = getBaked(0)
 
     //initialize components
-    player = new component(300,50,"white",40,40)
+    /*
+    player = new component(300,50,"white",40,40,baked_map[0])
     nemesis = new enemy(250,250,"blue",40,40)
 
     for(let i = 0; i < 4; i++){
@@ -56,6 +58,10 @@ function Start() {
     stairs[3] = new object(150,200,"green",50,50)
     stairs[4] = new object(150,250,"green",50,50)
     stairs[4] = new object(250,50,"green",50,50)
+
+    house = new object(50,50,"yellow",70,70)*/
+
+    
 }
 
 function Update() {
@@ -64,6 +70,8 @@ function Update() {
         writeText("NUTS AND MILK", window.innerWidth/2-270,window.innerHeight/2-140,"70px","white")
         writeText("Press ENTER to START", window.innerWidth/2-180,window.innerHeight/2+50,"30px","white")
     }else{
+        house.update()
+
         floors.forEach(f => {
             f.update()
         })
@@ -87,12 +95,25 @@ function Update() {
         nemesis.newPos()
         nemesis.update()
 
-        //console.log(nemesis.calcPath(nemesis.calcPosMap(),baked_map[0],player))
-
         player.newPos() 
         player.update()
 
-        writeText("FOOD : " + foods, 30,30,"20px","white")
+        if(player.crashWith(nemesis)){
+            milks -= 1
+            player = new component(300,50,"white",40,40,baked_map[0])
+            nemesis = new enemy(250,250,"blue",40,40)
+        }else if(player.crashWith(house) && foods == food.length){
+            console.log("YOU WIN!")
+            //avanti di livello
+        }
+        if(milks < 0){
+            console.log("YOU LOSE!")
+            window.location.reload()
+        }
+
+
+        writeText("NUTS : " + foods, 30,30,"20px","white")
+        writeText("MILKS : " + milks, 150,30,"20px","white")
     }
 }
 

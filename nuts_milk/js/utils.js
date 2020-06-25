@@ -5,7 +5,7 @@ function writeText(text, x, y, size, color, style = "normal") {
     ctx.fillText(text, x, y)
 }
 
-function component(x, y, color, width, height) {
+function component(x, y, color, width, height, map_limits) {
     this.width = width
     this.height = height
     this.x = x
@@ -18,6 +18,7 @@ function component(x, y, color, width, height) {
     this.isGrounded = false
     this.jump = 0
     this.stairs = false
+    this.map_limits = map_limits
 
     this.update = function() {
         if(isStarted){
@@ -83,8 +84,15 @@ function component(x, y, color, width, height) {
             this.velY = 0
         }
 
-        this.x += this.velX
+        if(this.x + this.velX > map_limits[0].split("").length*50+50-this.width){
+            this.x = 50
+        }else if(this.x + this.velX < 50){
+            this.x = map_limits[0].split("").length*50+10
+        }else{
+            this.x += this.velX
+        }
         this.velX = 0
+        
     }
 
     this.crashWith = function(otherobj, newPositions = [0,0]) {
