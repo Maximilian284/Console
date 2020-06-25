@@ -18,7 +18,13 @@ canvas{
   */
 }
 
+#mobileBrowsersError {
+  color: white;
+  size: 100px;
+  text-align: center;
+}
+
 @font-face { /* Add Space Invaders Font*/
   font-family: 'Space Invaders';
   src: url('../res/font/unifont.ttf') format('truetype'); 
-}  
+}

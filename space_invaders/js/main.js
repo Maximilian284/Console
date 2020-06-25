@@ -20,11 +20,17 @@ let gameArea = {
 }
 
 function start() {
-  // Initialize Stars
-  startStars() 
+  if (!isMobile()){
+    // Initialize Stars
+    startStars() 
 
-  // Initialize Game
-  gameArea.start()
+    // Initialize Game
+    gameArea.start()
+  } else {
+    let h1 = document.getElementById("mobileBrowsersError")
+    let text = document.createTextNode("You can't use play this game on mobile browsers.")
+    h1.appendChild(text)
+  }
 }
 
 function update() {
