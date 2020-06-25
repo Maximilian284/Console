@@ -1,6 +1,9 @@
 let score = "0000"
 let hiScore = "0000"
 let game = false
+let ship
+let shot = false
+let bullets = []
 
 let gameArea = {
   canvas : document.createElement("canvas"),
@@ -26,6 +29,9 @@ function start() {
 
     // Initialize Game
     gameArea.start()
+
+    ship = new Ship()
+
   } else {
     let h1 = document.getElementById("mobileBrowsersError")
     let text = document.createTextNode("You can't use play this game on mobile browsers.")
@@ -66,12 +72,45 @@ function update() {
     writeText("= 10 POINTS", "35px", "white", 183, 590)
 
   } else {
-    writeText("ciao", "35px", "white", 90, 40)
+    // Score
+    writeText("SCORE", "35px", "white", 110, 40)
+    writeText("HI-SCORE", "35px", "white", 270, 40)
+    writeText(score, "35px", "white", 120, 85)
+    writeText(hiScore, "35px", "white", 310, 85)
+
+    ship.show()
+
+    for (let i = 0; i < bullets.length; i++) {
+      bullets[i].show()
+      bullets[i].move()
+
+      if (bullets[i].y < 100) {
+        bullets.splice(i, 1)
+      }
+    }
   }
 }
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener("keydown", (event) => {
   if (event.key == "Enter" && game == false){
     game = true 
-  } 
+  } else if (game == true) {
+    if (event.key == "ArrowLeft") {
+      ship.move(0)
+    } else if (event.key == "ArrowRight"){
+      ship.move(1)
+    } else if (event.key == " " && shot == false) {
+      let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y)
+      bullets.push(bullet)
+      shot = true
+    }
+  }
+})
+
+document.addEventListener("keyup", (event) => {
+  if (game == true) {
+    if (event.key == " "){
+      shot = false
+    }
+  }
 })

@@ -11,6 +11,7 @@ function drawImg(src, x, y, width, height) {
   image.src = src
   ctx.drawImage(image, x, y, width, height)
 }
+
 function isMobile() {
   if (navigator.userAgent.match(/Android/i) 
       || navigator.userAgent.match(/webOS/i) 
@@ -24,3 +25,4 @@ function isMobile() {
     return false
   }
 }
+
