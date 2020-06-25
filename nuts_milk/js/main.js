@@ -122,7 +122,7 @@ function Update() {
         player.newPos() 
         player.update()
 
-        if(player.crashWith(nemesis)){
+        if(player.crashWith(nemesis) || player.y > window.innerHeight){
             milks -= 1
             player = new component(300,50,"white",40,40,baked_map[0])
             nemesis = new enemy(250,250,"blue",40,40)
@@ -142,16 +142,28 @@ function Update() {
 }
 
 //utils
-
-
+let keys = {}
 document.addEventListener('keydown', function(event) {
+    keys[event.keyCode] = true
     if(event.keyCode == 13 && !isStarted) {
         isStarted = true
     }else if(event.keyCode == 32 && isStarted && player.isGrounded){
         player.jump = 8
+        if(keys[39]){
+            player.velX = player.speed*6
+        }
+        if(keys[37]){
+            player.velX = -player.speed*6
+        }
     }else if(event.keyCode == 39 && isStarted){
+        if(keys[32]){
+            player.jump = 8
+        }
         player.velX = player.speed
     }else if(event.keyCode == 37 && isStarted){
+        if(keys[32]){
+            player.jump = 8
+        }
         player.velX = -player.speed
     }else if(event.keyCode == 40 && isStarted && player.stairs){
         player.velY = player.speed
@@ -160,3 +172,7 @@ document.addEventListener('keydown', function(event) {
     }
     
 },false ) 
+
+document.addEventListener('keyup',(event) => {
+    keys[event.keyCode] = false
+})

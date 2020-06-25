@@ -197,22 +197,19 @@ function enemy(x, y, color, width, height){
                 this.isMoving = 1
             }
         }else{
-
             if(this.target[0]*50+50 == this.x && this.target[1]*50+50 == this.y){
                 this.isMoving = 0
+            }else{
+                if(this.isMoving == 1){
+                    this.velY = -5
+                }else if(this.isMoving == 2){
+                    this.velX = 0.5
+                }else if(this.isMoving == 3){
+                    this.velY = 5
+                }else if(this.isMoving == 4){
+                    this.velX = -0.5
+                }
             }
-
-            if(this.isMoving == 1){
-                this.velY = -5
-            }else if(this.isMoving == 2){
-                this.velX = 0.5
-            }else if(this.isMoving == 3){
-                this.velY = 5
-            }else if(this.isMoving == 4){
-                this.velX = -0.5
-            }
-
-            
         }
         
     }
@@ -224,22 +221,22 @@ function enemy(x, y, color, width, height){
         
         if(coords[0]-1 > -1 && map[coords[1]][coords[0]-1] == "1" && ((player_coords[0] < coords[0] && player_coords[1] == coords[1]) || (stairs_coord_x < coords[0]))){
             place = [(coords[0]-1) * 50 + 50,coords[1] * 50 + 50]
-        }else if(coords[0]+1 < 6 && map[coords[1]][coords[0]+1] == "1" && ((player_coords[0] > coords[0] && player_coords[1] == coords[1]) || (stairs_coord_x > coords[0]))){
+        }else if(coords[0]+1 < map[0].split("").length && map[coords[1]][coords[0]+1] == "1" && ((player_coords[0] > coords[0] && player_coords[1] == coords[1]) || (stairs_coord_x > coords[0]))){
             place = [(coords[0]+1) * 50 + 50,coords[1] * 50 + 50]
         }
 
         if(coords[1]-1 > -1 && map[coords[1]-1][coords[0]] == "1" && player_coords[1] < coords[1]){
             place = [coords[0] * 50 + 50,(coords[1]-1) * 50 + 50]
-        }else if(coords[1]+1 < 5 && map[coords[1]+1][coords[0]] == "1" && player_coords[1] > coords[1]){
+        }else if(coords[1]+1 < map.length && map[coords[1]+1][coords[0]] == "1" && player_coords[1] > coords[1]){
             place = [coords[0] * 50 + 50,(coords[1]+1) * 50 + 50]
         }
 
-        return this.calcPosMap(place[0],place[1])
+        return [(place[0]-50)/50,(place[1]-50)/50]
     }
 
     this.calcPosMap = function(x1 = this.x,y1= this.y){
         let coords = [0,0]
-        let consts = [0,50,100,150,200,250,300,350]
+        let consts = [0,50,100,150,200,250,300,350,450,500,550,650,750,800,850,900]
         let x = x1 + this.width/2
         let y = y1 + this.height/2
         let done = [0,0]
@@ -255,7 +252,7 @@ function enemy(x, y, color, width, height){
             if(y < e && done[1] == 0){
                 coords[1] = (consts[consts.indexOf(e)-1]/50)-1
                 done[1] = 1
-            }else if(y < e && done[1] == 0){
+            }else if(y == e && done[1] == 0){
                 coords[1] = (consts[consts.indexOf(e)]/50 )-1
                 done[1] = 1
             }
