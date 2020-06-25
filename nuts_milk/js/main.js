@@ -8,6 +8,8 @@ let springs = []
 let foods = 0
 let milks = 2
 let house
+let spawnpoints = []
+let spawnpointsNuts = []
 
 let baked_map = []
 
@@ -61,7 +63,29 @@ function Start() {
 
     house = new object(50,50,"yellow",70,70)*/
 
-    
+    let map = getMap(0)
+    for(let y = 0; y < map.length; y++){
+        for(let x = 0; x < map[y].split("").length; x++){
+            if(map[y][x] == "1"){
+                floors.push(new object(x*50+50,y*50+50,"red",50,50))
+            }else if(map[y][x] == "2"){
+                stairs.push(new object(x*50+50,y*50+50,"green",50,50))
+            }else if(map[y][x] == "3"){
+                springs.push(new object(x*50+50,y*50+50,"yellow",50,50))
+            }else if(map[y][x] == "p"){
+                player = new component(x*50+50,y*50+50,"white",40,40,baked_map[0])
+                spawnpoints[0] = [x*50+50,y*50+50]
+            }else if(map[y][x] == "e"){
+                nemesis = new enemy(x*50+50,y*50+50,"blue",40,40)
+                spawnpoints[1] = [x*50+50,y*50+50]
+            }else if(map[y][x] == "n"){
+                food.push(new object(x*50+50,y*50+50,"orange",20,20))
+                spawnpointsNuts.push([x*50+50,y*50+50])
+            }else if(map[y][x] == "h"){
+                house = new object(x*50+50,y*50+50,"white",100,50)
+            }
+        }
+    }
 }
 
 function Update() {
