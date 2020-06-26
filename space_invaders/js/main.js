@@ -1,19 +1,27 @@
+// Score Vars
 let score = "0000"
 let hiScore = "0000"
-let points = 0
-let game = false
+
+// Game Objects Vars
 let ship
-let shot = false
 let bullets = []
 let aliens = []
+let alien
+
+// Game Vars
+let game = false
 let levelMap
 let levelN = 1
-let alien
 let win = false
-let timer = 0
-let timerAlienShowMode = 0
+let shot = false
 let alienShowMode = true
 
+// Timer Vars
+let time = 1500
+let timer = 0
+let timerAlienShowMode = 0
+
+// Aliens Movement Vars
 let aliensGoDown = true
 let aliensMoveDown = 0
 let aliensGoRight = false
@@ -47,18 +55,22 @@ function start() {
     // Initialize Game
     gameArea.start()
 
+    // Initialize ship
     ship = new Ship()
 
-    if (localStorage.getItem("game") !== null) {
+    // Load Vars
+    if (localStorage.getItem("levelN") !== null) {
       loadVar()
     }
 
+    // Set Map
     levelMap = getLevel(levelN)
 
     if (levelMap == ""){
       gameArea.stop()
     }
 
+    // Initilize Aliens
     for (let i = 0; i < levelMap.length; i++){
       for (let j = 0; j < levelMap[i].length; j++){
         alien = new Alien(j*40+68, i*35+150, levelMap[i].charAt(j))
@@ -67,6 +79,7 @@ function start() {
     }
 
   } else {
+    // Show Error For Mobile Users
     let h1 = document.getElementById("mobileBrowsersError")
     let text = document.createTextNode("You can't use play this game on mobile browsers.")
     h1.appendChild(text)
@@ -124,17 +137,15 @@ function update() {
 
 
       for (let j = 0; j < aliens.length; j++){
-        points = 0
-        
         if (bullets[i].hit(aliens[j])){      
-          bullets.splice(i, 1)
-          aliens.splice(j, 1)
-
-          points += aliens[j].points
+          
 
           score = parseInt(score)
-          score += points
+          score += aliens[j].points
           score = score.toString()
+
+          bullets.splice(i, 1)
+          aliens.splice(j, 1)
 
           if (score.length == 1){
             score = "000" + score
@@ -155,10 +166,27 @@ function update() {
     for (let i = 0; i < aliens.length; i++){
       timerAlienShowMode += 1
 
-      if (timerAlienShowMode % 1500 == 0){
+      if (aliens.length > 42 && aliens.length <= 52){
+        time = 1400
+      } else if (aliens.length > 32 && aliens.length <= 42){
+        time = 1150
+      } else if (aliens.length > 22 && aliens.length <= 32){
+        time = 800
+      } else if (aliens.length > 12 && aliens.length <= 22){
+        time = 450
+      } else if (aliens.length > 7 && aliens.length <= 12){
+        time = 170
+      } else if (aliens.length <= 7){
+        time = 70
+      }
+
+      if (timerAlienShowMode % time == 0){
         alienShowMode = !alienShowMode
         timerAlienShowMode = 0
 
+
+
+        // Aliens Movement
         if (aliensFirstMove <= 5){
           aliensFirstMove++
           for (let i = 0; i < aliens.length; i++){
@@ -204,14 +232,14 @@ function update() {
       aliens[i].show(alienShowMode)
     }
 
-    // Win
+    // Check Win
     if (aliens.length == 0){
       levelN += 1
       win = true
       timer = 0
     }
 
-  } else if (win == true) {
+  } else if (win == true) { // Win
     timer += 1
 
     writeText("WIN LEVEL " + (levelN - 1) + "!", "50px", "white", 120, 336)
