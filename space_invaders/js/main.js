@@ -1,9 +1,26 @@
 let score = "0000"
 let hiScore = "0000"
+let points = 0
 let game = false
 let ship
 let shot = false
 let bullets = []
+let aliens = []
+let levelMap
+let levelN = 1
+let alien
+let win = false
+let timer = 0
+let timerAlienShowMode = 0
+let alienShowMode = true
+
+let aliensGoDown = true
+let aliensMoveDown = 0
+let aliensGoRight = false
+let aliensMoveRight = 0
+let aliensGoLeft = false
+let aliensMoveLeft = 0
+let aliensFirstMove = 0
 
 let gameArea = {
   canvas : document.createElement("canvas"),
@@ -32,6 +49,23 @@ function start() {
 
     ship = new Ship()
 
+    if (localStorage.getItem("game") !== null) {
+      loadVar()
+    }
+
+    levelMap = getLevel(levelN)
+
+    if (levelMap == ""){
+      gameArea.stop()
+    }
+
+    for (let i = 0; i < levelMap.length; i++){
+      for (let j = 0; j < levelMap[i].length; j++){
+        alien = new Alien(j*40+68, i*35+150, levelMap[i].charAt(j))
+        aliens.push(alien)
+      }
+    }
+
   } else {
     let h1 = document.getElementById("mobileBrowsersError")
     let text = document.createTextNode("You can't use play this game on mobile browsers.")
@@ -41,6 +75,8 @@ function start() {
 
 function update() {
   gameArea.clear()
+
+  saveVar()
 
   if (game == false) { // Intro
     // Score
@@ -71,22 +107,124 @@ function update() {
     drawImg("./res/imgs/alien_10_0.png", 138, 570, 22, 22)
     writeText("= 10 POINTS", "35px", "white", 183, 590)
 
-  } else {
+  } else if (game == true && win == false){
     // Score
     writeText("SCORE", "35px", "white", 110, 40)
     writeText("HI-SCORE", "35px", "white", 270, 40)
     writeText(score, "35px", "white", 120, 85)
     writeText(hiScore, "35px", "white", 310, 85)
 
+    // Ship
     ship.show()
 
+    // Bullets
     for (let i = 0; i < bullets.length; i++) {
       bullets[i].show()
       bullets[i].move()
 
+
+      for (let j = 0; j < aliens.length; j++){
+        points = 0
+        
+        if (bullets[i].hit(aliens[j])){      
+          bullets.splice(i, 1)
+          aliens.splice(j, 1)
+
+          points += aliens[j].points
+
+          score = parseInt(score)
+          score += points
+          score = score.toString()
+
+          if (score.length == 1){
+            score = "000" + score
+          } else if (score.length == 2){
+            score = "00" + score
+          } else if (score.length == 3){
+            score = "0" + score
+          }
+        }
+      }
+
       if (bullets[i].y < 100) {
         bullets.splice(i, 1)
       }
+    }
+    
+    // Aliens
+    for (let i = 0; i < aliens.length; i++){
+      timerAlienShowMode += 1
+
+      if (timerAlienShowMode % 1500 == 0){
+        alienShowMode = !alienShowMode
+        timerAlienShowMode = 0
+
+        if (aliensFirstMove <= 5){
+          aliensFirstMove++
+          for (let i = 0; i < aliens.length; i++){
+            aliens[i].move(10, 0)
+          }
+        } else {
+          if (aliensGoDown == true){
+            aliensGoDown = false
+            if (aliensGoRight == false){
+              aliensGoLeft = true
+            }
+            aliensMoveDown++
+            for (let i = 0; i < aliens.length; i++){
+              aliens[i].move(0, 25)
+            }
+          } else if (aliensGoRight == true && aliensMoveRight != 10){
+            aliensMoveRight++
+            if (aliensMoveRight == 10){
+              aliensGoDown = true
+              aliensGoRight = false
+              aliensMoveRight = 0
+            }
+            for (let i = 0; i < aliens.length; i++){
+              aliens[i].move(10, 0)
+            }
+          } else if (aliensGoLeft == true && aliensMoveLeft != 10){
+            aliensMoveLeft++
+            if (aliensMoveLeft == 10){
+              aliensGoDown = true
+              aliensGoLeft = false
+              aliensGoRight = true
+              aliensMoveLeft = 0
+            }
+            for (let i = 0; i < aliens.length; i++){
+              aliens[i].move(-10, 0)
+            }
+          }
+        }
+        
+        
+      }
+
+      aliens[i].show(alienShowMode)
+    }
+
+    // Win
+    if (aliens.length == 0){
+      levelN += 1
+      win = true
+      timer = 0
+    }
+
+  } else if (win == true) {
+    timer += 1
+
+    writeText("WIN LEVEL " + (levelN - 1) + "!", "50px", "white", 120, 336)
+
+    if (parseInt(score) > parseInt(hiScore)){
+      hiScore = score
+      saveVar()
+    }
+    
+    if (timer == 100){
+      win = false
+      saveVar()
+      open("./spaceInvaders.html", "_self")
     }
   }
 }
@@ -100,7 +238,7 @@ document.addEventListener("keydown", (event) => {
     } else if (event.key == "ArrowRight"){
       ship.move(1)
     } else if (event.key == " " && shot == false) {
-      let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y)
+      let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y, -3)
       bullets.push(bullet)
       shot = true
     }

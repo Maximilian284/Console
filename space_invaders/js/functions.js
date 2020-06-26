@@ -26,3 +26,12 @@ function isMobile() {
   }
 }
 
+function saveVar() {
+  localStorage.setItem("levelN", levelN)
+  localStorage.setItem("hiScore", hiScore)
+}
+
+function loadVar(){
+  levelN = JSON.parse(localStorage.getItem("levelN"))
+  hiScore = localStorage.getItem("hiScore")
+}
