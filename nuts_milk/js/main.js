@@ -41,22 +41,22 @@ function Start() {
     for(let y = 0; y < map.length; y++){
         for(let x = 0; x < map[y].split("").length; x++){
             if(map[y][x] == "1"){
-                floors.push(new object(x*50+50,y*50+50,"red",50,50))
+                floors.push(new object(x*50+50,y*50+50,"./sprites/wall.png",50,50))
             }else if(map[y][x] == "2"){
-                stairs.push(new object(x*50+50,y*50+50,"green",50,50))
+                stairs.push(new object(x*50+50,y*50+50,"./sprites/stairs.png",50,50))
             }else if(map[y][x] == "3"){
-                springs.push(new object(x*50+50,y*50+50,"yellow",50,50))
+                springs.push(new object(x*50+50,y*50+50,"./sprites/springsboard.png",50,50))
             }else if(map[y][x] == "p"){
-                player = new component(x*50+50,y*50+50,"white",40,40,baked_map[0])
+                player = new component(x*50+50,y*50+50,"./sprites/player.png",40,40,baked_map[0])
                 spawnpoints[0] = [x*50+50,y*50+50]
             }else if(map[y][x] == "e"){
-                nemesis = new enemy(x*50+50,y*50+50,"blue",40,40)
+                nemesis = new enemy(x*50+50,y*50+50,"./sprites/enemy.png",50,50)
                 spawnpoints[1] = [x*50+50,y*50+50]
             }else if(map[y][x] == "n"){
-                food.push(new object(x*50+50,y*50+50,"orange",20,20))
+                food.push(new object(x*50+50,y*50+50,"./sprites/apple.png",50,50))
                 spawnpointsNuts.push([x*50+50,y*50+50])
             }else if(map[y][x] == "h"){
-                house = new object(x*50+50,y*50+50,"white",100,50)
+                house = new object(x*50+50,y*50+50,"./sprites/house.png",70,50)
             }
         }
     }
@@ -98,11 +98,12 @@ function Update() {
 
         if(player.crashWith(nemesis) || player.y > window.innerHeight){
             milks -= 1
-            player = new component(spawnpoints[0][0],spawnpoints[0][1],"white",40,40,baked_map[0])
-            nemesis = new enemy(spawnpoints[1][0],spawnpoints[1][1],"blue",40,40)
+            food = 0
+            player = new component(spawnpoints[0][0],spawnpoints[0][1],"./sprites/player.png",40,40,baked_map[0])
+            nemesis = new enemy(spawnpoints[1][0],spawnpoints[1][1],"./sprites/enemy.png",50,50) 
             food = []
             spawnpointsNuts.forEach(s => {
-                food.push(new object(s[0],s[1],"orange",20,20))
+                food.push(new object(s[0],s[1],"./sprites/apple.png",50,50))
             })
         }else if(player.crashWith(house) && foods == food.length){
             console.log("YOU WIN!")

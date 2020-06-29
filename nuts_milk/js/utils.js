@@ -5,7 +5,7 @@ function writeText(text, x, y, size, color, style = "normal") {
     ctx.fillText(text, x, y)
 }
 
-function component(x, y, color, width, height, map_limits) {
+function component(x, y, sprite, width, height, map_limits) {
     this.width = width
     this.height = height
     this.x = x
@@ -23,8 +23,12 @@ function component(x, y, color, width, height, map_limits) {
     this.update = function() {
         if(isStarted){
             ctx = gameArea.context
-            ctx.fillStyle = color
-            ctx.fillRect(this.x, this.y, this.width, this.height)
+            let image = new Image()
+            image.src = sprite
+            ctx.drawImage(image,
+                this.x,
+                this.y,
+                this.width, this.height)
         } 
     }
     this.newPos = function() {
@@ -115,7 +119,7 @@ function component(x, y, color, width, height, map_limits) {
     }
     }
 
-function object(x, y, color, width, height) {
+function object(x, y, sprite, width, height) {
     this.width = width
     this.height = height
     this.x = x
@@ -124,14 +128,18 @@ function object(x, y, color, width, height) {
     this.update = function() {
         if(isStarted){
             ctx = gameArea.context
-            ctx.fillStyle = color
-            ctx.fillRect(this.x, this.y, this.width, this.height)
+            let image = new Image()
+            image.src = sprite
+            ctx.drawImage(image,
+                this.x,
+                this.y,
+                this.width, this.height)
         }
     }
 }
 
-function enemy(x, y, color, width, height){
-    component.call(this, x, y, color, width, height)
+function enemy(x, y, sprite, width, height){
+    component.call(this, x, y, sprite, width, height)
     this.hasObstacle = false
     this.speed = 1
     this.target = []
