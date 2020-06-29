@@ -229,14 +229,14 @@ function enemy(x, y, color, width, height){
             place = [coords[0] * 50 + 50,(coords[1]-1) * 50 + 50]
         }else if(coords[1]+1 < map.length && map[coords[1]+1][coords[0]] == "1" && player_coords[1] > coords[1]){
             place = [coords[0] * 50 + 50,(coords[1]+1) * 50 + 50]
-        }
+        }   
 
         return [(place[0]-50)/50,(place[1]-50)/50]
     }
 
     this.calcPosMap = function(x1 = this.x,y1= this.y){
         let coords = [0,0]
-        let consts = [0,50,100,150,200,250,300,350,450,500,550,650,750,800,850,900]
+        let consts = [0,50,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900]
         let x = x1 + this.width/2
         let y = y1 + this.height/2
         let done = [0,0]

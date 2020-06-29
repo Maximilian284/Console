@@ -37,32 +37,6 @@ function Start() {
     baked_map[0] = getBaked(0)
 
     //initialize components
-    /*
-    player = new component(300,50,"white",40,40,baked_map[0])
-    nemesis = new enemy(250,250,"blue",40,40)
-
-    for(let i = 0; i < 4; i++){
-        floors[i] = new object(i*50 + 50,100,"red",50,50)
-    }
-    floors[4] = new object(300,100,"red",50,50)
-    floors[5] = new object(50,200,"red",50,50)
-    floors[6] = new object(100,200,"red",50,50)
-    floors[7] = new object(200,200,"red",50,50)
-    floors[8] = new object(250,200,"red",50,50)
-    floors[9] = new object(300,200,"red",50,50)
-    for(let i = 10; i < 16; i++){
-        floors[i] = new object((i-10)*50 + 50,300,"red",50,50)
-    }
-
-    stairs[0] = new object(250,100,"green",50,50)
-    stairs[1] = new object(250,150,"green",50,50)
-    stairs[2] = new object(150,150,"green",50,50)
-    stairs[3] = new object(150,200,"green",50,50)
-    stairs[4] = new object(150,250,"green",50,50)
-    stairs[4] = new object(250,50,"green",50,50)
-
-    house = new object(50,50,"yellow",70,70)*/
-
     let map = getMap(0)
     for(let y = 0; y < map.length; y++){
         for(let x = 0; x < map[y].split("").length; x++){
@@ -124,8 +98,12 @@ function Update() {
 
         if(player.crashWith(nemesis) || player.y > window.innerHeight){
             milks -= 1
-            player = new component(300,50,"white",40,40,baked_map[0])
-            nemesis = new enemy(250,250,"blue",40,40)
+            player = new component(spawnpoints[0][0],spawnpoints[0][1],"white",40,40,baked_map[0])
+            nemesis = new enemy(spawnpoints[1][0],spawnpoints[1][1],"blue",40,40)
+            food = []
+            spawnpointsNuts.forEach(s => {
+                food.push(new object(s[0],s[1],"orange",20,20))
+            })
         }else if(player.crashWith(house) && foods == food.length){
             console.log("YOU WIN!")
             //avanti di livello
