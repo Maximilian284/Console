@@ -145,6 +145,7 @@ function enemy(x, y, sprite, width, height){
     this.target = []
     this.position = []
     this.isMoving = 0 
+    this.velY = 0
     // 1
     //402
     // 3
@@ -154,9 +155,9 @@ function enemy(x, y, sprite, width, height){
             if(this.crashWith(f,[0,this.velY])){
                 this.velY = 0
                 if(this.position[0] > this.target[0]){
-                    this.velX = -0.5
+                    this.velX = -1
                 }else{
-                    this.velX = 0.5
+                    this.velX = 1
                 }
                 floors.forEach(f =>{
                     if(this.crashWith(f,[this.velX])) this.velX = 0
@@ -165,9 +166,9 @@ function enemy(x, y, sprite, width, height){
             }else if(this.crashWith(f,[this.velX,0])){
                 this.velX = 0
                 if(this.position[1] > this.target[1]){
-                    this.velY = -6
+                    this.velY = -2.5
                 }else{
-                    this.velY = 6
+                    this.velY = 2.5
                 }
                 floors.forEach(f =>{
                     if(this.crashWith(f,[0,this.velY])) this.velY = 0
@@ -190,18 +191,18 @@ function enemy(x, y, sprite, width, height){
             let t = this.calcPath(p,map,player)
             this.target = t
             if(t[0] > p[0]){
-                this.velX = 0.5
+                this.velX = 1
                 this.isMoving = 2
             }else if(t[0] < p[0]){
-                this.velX = -0.5
+                this.velX = -1
                 this.isMoving = 4
             }
     
             if(t[1] > p[1]){
-                this.velY = 5
+                this.velY = 2.5
                 this.isMoving = 3
             }else if(t[1] < p[1]){
-                this.velY = -5
+                this.velY = -2.5
                 this.isMoving = 1
             }
         }else{
@@ -209,13 +210,13 @@ function enemy(x, y, sprite, width, height){
                 this.isMoving = 0
             }else{
                 if(this.isMoving == 1){
-                    this.velY = -5
+                    this.velY = -2.5
                 }else if(this.isMoving == 2){
-                    this.velX = 0.5
+                    this.velX = 1
                 }else if(this.isMoving == 3){
-                    this.velY = 5
+                    this.velY = 2.5
                 }else if(this.isMoving == 4){
-                    this.velX = -0.5
+                    this.velX = -1
                 }
             }
         }
