@@ -12,9 +12,11 @@ let alien
 let game = false
 let levelMap
 let levelN = 1
-let win = false
+let win = 2
 let shot = false
 let alienShowMode = true
+let shipLifes = 3
+let randomN
 
 // Timer Vars
 let time = 1500
@@ -73,7 +75,7 @@ function start() {
     // Initilize Aliens
     for (let i = 0; i < levelMap.length; i++){
       for (let j = 0; j < levelMap[i].length; j++){
-        alien = new Alien(j*40+68, i*35+150, levelMap[i].charAt(j))
+        alien = new Alien(j*40+58, i*35+130, levelMap[i].charAt(j))
         aliens.push(alien)
       }
     }
@@ -120,12 +122,19 @@ function update() {
     drawImg("./res/imgs/alien_10_0.png", 138, 570, 22, 22)
     writeText("= 10 POINTS", "35px", "white", 183, 590)
 
-  } else if (game == true && win == false){
+  } else if (game == true && win == 2){
     // Score
     writeText("SCORE", "35px", "white", 110, 40)
     writeText("HI-SCORE", "35px", "white", 270, 40)
     writeText(score, "35px", "white", 120, 85)
     writeText(hiScore, "35px", "white", 310, 85)
+
+    // Ship Life
+    drawLine(0, gameArea.canvas.height-39, gameArea.canvas.width, gameArea.canvas.height-45, 2, "white")
+    for (let i = 0; i < shipLifes; i++){
+      drawImg("./res/imgs/ship.png", i*50+3, gameArea.canvas.height-39, 39, 39)
+    }
+
 
     // Ship
     ship.show()
@@ -137,9 +146,7 @@ function update() {
 
 
       for (let j = 0; j < aliens.length; j++){
-        if (bullets[i].hit(aliens[j])){      
-          
-
+        if (bullets[i].hit(aliens[j]) && bullets[i].shooter == "ship"){      
           score = parseInt(score)
           score += aliens[j].points
           score = score.toString()
@@ -155,9 +162,16 @@ function update() {
             score = "0" + score
           }
         }
+        if (bullets[i].hit(ship)){
+          shipLifes--
+          bullets.splice(i, 1)
+          if (shipLifes == 0){
+            win = 0
+          }
+        }
       }
 
-      if (bullets[i].y < 100) {
+      if (bullets[i].y < 100 || bullets[i].y > gameArea.canvas.height-50) {
         bullets.splice(i, 1)
       }
     }
@@ -165,6 +179,20 @@ function update() {
     // Aliens
     for (let i = 0; i < aliens.length; i++){
       timerAlienShowMode += 1
+
+      randomN = randInt(0, time+200)
+
+      if (randomN == 100){
+        aliens[i].shot()
+      } 
+
+      if (aliens[i].hit(ship)){
+        win = 0
+      } 
+
+      if (aliens[i].y < 50){
+        win = 0
+      }
 
       if (aliens.length > 42 && aliens.length <= 52){
         time = 1400
@@ -183,8 +211,6 @@ function update() {
       if (timerAlienShowMode % time == 0){
         alienShowMode = !alienShowMode
         timerAlienShowMode = 0
-
-
 
         // Aliens Movement
         if (aliensFirstMove <= 5){
@@ -225,24 +251,21 @@ function update() {
             }
           }
         }
-        
-        
       }
-
       aliens[i].show(alienShowMode)
     }
 
     // Check Win
     if (aliens.length == 0){
       levelN += 1
-      win = true
+      win = 1
       timer = 0
     }
 
-  } else if (win == true) { // Win
+  } else if (win == 1) { // Win
     timer += 1
 
-    writeText("WIN LEVEL " + (levelN - 1) + "!", "50px", "white", 120, 336)
+    writeText("YOU WIN LEVEL " + (levelN - 1) + "!", "50px", "white", 90, 336)
 
     if (parseInt(score) > parseInt(hiScore)){
       hiScore = score
@@ -250,7 +273,22 @@ function update() {
     }
     
     if (timer == 100){
-      win = false
+      win = NaN
+      saveVar()
+      open("./spaceInvaders.html", "_self")
+    }
+  } else if (win == 0) {
+    timer += 1
+
+    writeText("YOU LOSE", "50px", "white", 120, 336)
+
+    hiScore = "0000"
+    levelN = 1
+    shipLifes = 3
+    saveVar()
+    
+    if (timer == 100){
+      win = NaN
       saveVar()
       open("./spaceInvaders.html", "_self")
     }
@@ -266,7 +304,7 @@ document.addEventListener("keydown", (event) => {
     } else if (event.key == "ArrowRight"){
       ship.move(1)
     } else if (event.key == " " && shot == false) {
-      let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y, -3)
+      let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y, -3, "ship")
       bullets.push(bullet)
       shot = true
     }

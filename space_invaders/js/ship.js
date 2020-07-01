@@ -2,7 +2,7 @@ function Ship() {
   this.width = 39
   this.height = 39
   this.x = (gameArea.canvas.width/2) - (this.width/2)
-  this.y = gameArea.canvas.height - this.height - 60
+  this.y = gameArea.canvas.height - this.height - 50
   this.speed = 4
 
   this.show = function(){

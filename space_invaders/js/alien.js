@@ -35,8 +35,24 @@ function Alien (x, y, type) {
     }
   }
 
+  this.shot = function(){
+    let bullet = new Bullet(this.x + this.width / 2, this.y, 3, "alien")
+    bullets.push(bullet)
+  }
+
   this.move = function(moveX, moveY) {
     this.x += moveX
     this.y += moveY
+  }
+
+  this.hit = function(entity){
+    if (this.x < entity.x + entity.width &&
+        this.x + this.width > entity.x &&
+        this.y < entity.y + entity.height &&
+        this.y > entity.y){
+      return true
+    } else {
+      return false
+    }
   }
 } 
