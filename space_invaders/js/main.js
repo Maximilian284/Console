@@ -265,7 +265,7 @@ function update() {
   } else if (win == 1) { // Win
     timer += 1
 
-    writeText("YOU WIN LEVEL " + (levelN - 1) + "!", "50px", "white", 90, 336)
+    writeText("YOU WIN LEVEL " + levelN + "!", "50px", "white", 90, 336)
 
     if (parseInt(score) > parseInt(hiScore)){
       hiScore = score
