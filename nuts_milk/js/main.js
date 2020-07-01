@@ -89,7 +89,7 @@ function Update() {
             if(player.crashWith(n)){
                 foods += 1
                 food.splice(food.indexOf(n),1)
-
+                document.getElementById("nuts").play()
             }
         })
 
@@ -107,6 +107,7 @@ function Update() {
         player.update()
 
         if((nemesis != null && player.crashWith(nemesis)) || player.y > window.innerHeight){
+            document.getElementById("lose").play()
             if(levelInt == 3){
                 levelInt += 1
                 foods = 0
@@ -123,6 +124,7 @@ function Update() {
             } 
         }else if(player.crashWith(house) && food.length == 0){
             console.log("YOU WIN!")
+            document.getElementById("win").play()
             if(levelInt == 3) milks += 1
             levelInt += 1
             foods = 0
@@ -146,9 +148,12 @@ let keys = {}
 document.addEventListener('keydown', function(event) {
     keys[event.keyCode] = true
     if(event.keyCode == 13 && !isStarted) {
+        document.getElementById("soundtrack").play()
+        document.getElementById("soundtrack").volume = 0.5
         isStarted = true
     }else if(event.keyCode == 32 && isStarted && player.isGrounded){
         player.jump = 8
+        document.getElementById("jump").play()
         if(keys[39]){
             player.velX = player.speed
         }else if(keys[37]){
