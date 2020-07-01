@@ -97,7 +97,7 @@ function component(x, y, sprite, width, height, map_limits) {
             this.x += this.velX
         }
         if(this.jump <= 0) this.velX = 0
-        else if(this.velX > 0) {this.velX = 4 }else if(this.velX < 0){ this.velX = -4}
+        else if(this.velX > 0) {this.velX = 3 }else if(this.velX < 0){ this.velX = -3}
         
     }
 
