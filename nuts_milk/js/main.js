@@ -137,7 +137,7 @@ function Update() {
         writeText("NUTS : " + foods, 30,30,"20px","white")
         writeText("MILKS : " + milks, 150,30,"20px","white")
         if(levelInt == 3) writeText("BONUS ROUND!", 300,30,"20px","white")
-        else writeText("LEVEL : " + levelInt, 300,30,"20px","white")
+        else writeText("LEVEL " + levelInt, 300,30,"20px","white")
     }
 }
 
@@ -150,10 +150,11 @@ document.addEventListener('keydown', function(event) {
     }else if(event.keyCode == 32 && isStarted && player.isGrounded){
         player.jump = 8
         if(keys[39]){
-            player.velX = player.speed*6
-        }
-        if(keys[37]){
-            player.velX = -player.speed*6
+            player.velX = player.speed
+        }else if(keys[37]){
+            player.velX = -player.speed
+        }else {
+            player.velX = 0
         }
     }else if(event.keyCode == 39 && isStarted){
         if(keys[32]){
@@ -170,7 +171,6 @@ document.addEventListener('keydown', function(event) {
     }else if(event.keyCode == 38 && isStarted && player.stairs){
         player.velY = -player.speed
     }
-    
 },false ) 
 
 document.addEventListener('keyup',(event) => {

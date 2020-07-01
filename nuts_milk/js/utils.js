@@ -36,6 +36,7 @@ function component(x, y, sprite, width, height, map_limits) {
         stairs.forEach(s =>{
             if(this.crashWith(s)){
                 this.stairs = true
+                this.jump = 0
                 a = true
                 return
             }
@@ -95,7 +96,8 @@ function component(x, y, sprite, width, height, map_limits) {
         }else{
             this.x += this.velX
         }
-        this.velX = 0
+        if(this.jump <= 0) this.velX = 0
+        else if(this.velX > 0) {this.velX = 4 }else if(this.velX < 0){ this.velX = -4}
         
     }
 
