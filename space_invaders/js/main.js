@@ -275,7 +275,7 @@ function update() {
     if (timer == 100){
       win = NaN
       saveVar()
-      open("./spaceInvaders.html", "_self")
+      open("./index.html", "_self")
     }
   } else if (win == 0) {
     timer += 1
@@ -290,7 +290,7 @@ function update() {
     if (timer == 100){
       win = NaN
       saveVar()
-      open("./spaceInvaders.html", "_self")
+      open("./index.html", "_self")
     }
   }
 }
