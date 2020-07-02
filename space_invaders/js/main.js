@@ -265,7 +265,7 @@ function update() {
   } else if (win == 1) { // Win
     timer += 1
 
-    writeText("YOU WIN LEVEL " + levelN + "!", "50px", "white", 90, 336)
+    writeText("YOU WIN LEVEL " + (levelN - 1) + "!", "50px", "white", 90, 336)
 
     if (parseInt(score) > parseInt(hiScore)){
       hiScore = score
@@ -282,7 +282,6 @@ function update() {
 
     writeText("YOU LOSE", "50px", "white", 120, 336)
 
-    hiScore = "0000"
     levelN = 1
     shipLifes = 3
     saveVar()
