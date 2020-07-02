@@ -1,3 +1,5 @@
+let timeSpawn  =0
+let rate = 4000/(speed + 0.01)
 function writeText(text, x, y, size, color, style = "normal") {
     let ctx = gameArea.context
     ctx.font = style + " " + size + " courier new"
@@ -45,6 +47,13 @@ function car(x,y,color,width,height){
             }
         })
 
+        cars.forEach(o => {
+            if(player.crashWith(o,[this.velX,0])){
+                this.velX = 0
+                crash()
+            }
+        })
+
         this.x += this.velX
         this.velX = 0
     }
@@ -69,22 +78,37 @@ function car(x,y,color,width,height){
     }
 }
 
-function enemyCar(x,y,color,width,height){
+function enemyCar(x,y,color,width,height,index){
     car.call(this, x, y, color, width, height)
+    this.index = index
     this.newPos = function(){
-        objects.forEach(o => {
-            if(player.crashWith(o,[this.velX,0])){
-                this.velX = 0
-                crash()
-            }
-        })
+        if(this.y >= window.innerHeight){
+            cars.splice(cars.indexOf(this),1)
+        }
 
         this.x += this.velX
-        this.y += -1 + (speed/100)
+        this.y += -1.5 + (speed/100)
         this.velX = 0
     }
 }
 
 function spawn(){
-    
+    rate = 4000/(speed + 0.01)
+    timeSpawn += 0.1
+    console.log(rate)
+    if(timeSpawn >= rate){
+        timeSpawn = 0
+
+       let way = Math.floor(Math.random() * 3)
+       let new_car = new enemyCar((way+1) * 100 + 25, -50, "yellow",50,50, cars.length)
+       let can = true
+       cars.forEach(c => {
+            if(c.crashWith(new_car)){
+                can = false
+                return
+            }
+       })
+
+       if(can) cars.push(new_car)
+    }
 }

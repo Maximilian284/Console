@@ -33,8 +33,8 @@ function Start() {
     objects[1] = new object(0,0,"red",100,window.innerHeight+20)
     objects[2] = new object(400,-window.innerHeight,"red",100,window.innerHeight+20)
     objects[3] = new object(400,0,"red",100,window.innerHeight+20)
-    cars[0] = new enemyCar(100,window.innerHeight-50,"yellow",50,50)
-    player = new car(225,window.innerHeight-50,"green",50,50)
+    cars[0] = new enemyCar(100,-50,"yellow",50,50,0)
+    player = new car(225,window.innerHeight-100,"green",50,50)
 }
 
 function Update() {
@@ -53,14 +53,16 @@ function Update() {
             o.update()
         })
 
+        player.update()
+
         cars.forEach(e => {
             e.newPos()
             e.update()
         })
 
-        player.update()
+        
 
-        if(Math.floor(Math.random() * 100) == 0) spawn()
+        spawn()
 
         if(speed > 0)player.newPos()
 
