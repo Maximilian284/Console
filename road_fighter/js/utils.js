@@ -10,6 +10,13 @@ function object(x, y,color ,width, height) {
     this.x = x
     this.y = y
 
+    this.newPos = function(){
+        if(this.y  >= window.innerHeight){
+            this.y = -window.innerHeight
+        }
+        this.y += speed/100
+    }
+
     this.update = function() {
         if(isStarted){
             ctx = gameArea.context
@@ -31,7 +38,53 @@ function car(x,y,color,width,height){
     this.velX = 0
 
     this.newPos = function(){
+        objects.forEach(o => {
+            if(player.crashWith(o,[this.velX,0])){
+                this.velX = 0
+                crash()
+            }
+        })
+
         this.x += this.velX
         this.velX = 0
     }
+
+    this.crashWith = function(otherobj, newPositions = [0,0]) {
+        let myleft = this.x + newPositions[0]
+        let myright = this.x + (this.width) + newPositions[0]
+        let mytop = this.y + newPositions[1]
+        let mybottom = this.y + (this.height) + newPositions[1]
+        let otherleft = otherobj.x +1
+        let otherright = otherobj.x + (otherobj.width) -1
+        let othertop = otherobj.y +1
+        let otherbottom = otherobj.y + (otherobj.height) -1
+        let crash = true
+        if ((mybottom < othertop) ||
+        (mytop > otherbottom) ||
+        (myright < otherleft) ||
+        (myleft > otherright)) {
+            crash = false 
+        }
+        return crash 
+    }
+}
+
+function enemyCar(x,y,color,width,height){
+    car.call(this, x, y, color, width, height)
+    this.newPos = function(){
+        objects.forEach(o => {
+            if(player.crashWith(o,[this.velX,0])){
+                this.velX = 0
+                crash()
+            }
+        })
+
+        this.x += this.velX
+        this.y += -1 + (speed/100)
+        this.velX = 0
+    }
+}
+
+function spawn(){
+    
 }
