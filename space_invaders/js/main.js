@@ -83,7 +83,7 @@ function start() {
   } else {
     // Show Error For Mobile Users
     let h1 = document.getElementById("mobileBrowsersError")
-    let text = document.createTextNode("You can't use play this game on mobile browsers.")
+    let text = document.createTextNode("You can't play this game on mobile browsers.")
     h1.appendChild(text)
   }
 }
