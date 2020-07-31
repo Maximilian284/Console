@@ -1,1 +1,24 @@
-/* CSS file */ 
+body {
+  background-color: black;
+  color: white;
+}
+
+#title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.img-title {
+  text-align: center;
+  margin-top: 5px;
+}
+
+#space-invaders-img {
+  width: 320px;
+  height: 180px;
+}
+
+img {
+  border: 2px solid white;
+  border-radius: 10px;
+}
