@@ -45,21 +45,7 @@ function Update() {
         writeText("ROAD FIGHTER", window.innerWidth/2-270,window.innerHeight/2-140,"70px","white")
         writeText("Press ENTER to START", window.innerWidth/2-180,window.innerHeight/2+50,"30px","white")
     }else if(isStarted == 1){
-        if(race - speed /(4000 * raceLength) <= 0){
-            //YOU WIN!
-            writeText("YOU WIN!", 600,window.innerHeight/2-50,"50px","white")
-            isStarted = 2
-            window.stop()
-        }else {
-            race -= speed /(4000 * raceLength)
-        }
-
-        if(fuel <= 0){
-            //YOU LOSE!
-            writeText("YOU LOSE!", 600,window.innerHeight/2-50,"50px","white")
-            isStarted = 2
-            window.stop()
-        }
+        document.getElementById("engine").volume = (speed / 400) - ((speed / 400) * 0.2)
         
         if((crashed || !keys[32]) && speed > 0){
             speed -= 2
@@ -97,8 +83,44 @@ function Update() {
             }
         }
 
+        if(race - speed /(4000 * raceLength) <= 0){
+            //YOU WIN!
+            document.getElementById("lessFuel").volume = 0
+            document.getElementById("engine").volume = 0
+            writeText("YOU WIN!", 600,window.innerHeight/2-50,"50px","white")
+            document.getElementById("win").play()
+            isStarted = 2
+            window.stop()
+        }else {
+            race -= speed /(4000 * raceLength)
+        }
+
+        if(fuel <= 0){
+            //YOU LOSE!
+            document.getElementById("lessFuel").volume = 0
+            document.getElementById("engine").volume = 0
+            writeText("YOU LOSE!", 600,window.innerHeight/2-50,"50px","white")
+            document.getElementById("gameOver").play()
+            isStarted = 2
+            window.stop()
+        }
+
         writeText("SPEED : " + speed + " km/h", 600,30,"20px","white")
-        writeText("FUEL : " + Math.round(fuel), 600,130,"20px","white")
+
+        if(fuel > 10) {
+            writeText("FUEL : " + Math.round(fuel), 600,130,"20px","white")
+            if(!document.getElementById("lessFuel").paused){
+                document.getElementById("lessFuel").loop = false
+                document.getElementById("lessFuel").pause()
+            }
+        } else {
+            writeText("FUEL : " + Math.round(fuel), 600,130,"20px","red")
+            if(document.getElementById("lessFuel").paused){
+                document.getElementById("lessFuel").loop = true
+                document.getElementById("lessFuel").play()
+            }
+        }
+
         writeText("RACE : " + Math.round(race), 600,230,"20px","white")
 
         drawRace()
@@ -108,6 +130,7 @@ function Update() {
 function crash(){
     console.log("player is crashed")
     crashed = true
+    document.getElementById("crash").play()
 }
 
 //utils
@@ -116,6 +139,7 @@ document.addEventListener('keydown', function(event) {
     keys[event.keyCode] = true
     if(keys[13] && isStarted == 0) {
         isStarted = 1
+        document.getElementById("engine").play()
     }
     if(keys[39] && isStarted == 1 && fuel > 0) {
         player.velX = speed / 80

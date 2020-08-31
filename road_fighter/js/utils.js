@@ -16,6 +16,23 @@ function drawRace(){
     ctx.fillRect(520,value,50,window.innerHeight - 10 - value)
 }
 
+function sound(src) {
+    this.sound = document.createElement("audio")
+    this.sound.src = src
+    this.sound.setAttribute("preload", "auto")
+    this.sound.setAttribute("controls", "none")
+    this.sound.setAttribute("muted", "muted")
+    this.sound.setAttribute("autoplay", true)
+    this.sound.style.display = "none"
+    document.body.appendChild(this.sound)
+    this.play = function(){
+      this.sound.play()
+    }
+    this.stop = function(){
+      this.sound.pause()
+    }
+}
+
 function object(x, y,color ,width, height, isTrigger = false) {
     this.width = width
     this.height = height
@@ -68,6 +85,7 @@ function car(x,y,color,width,height){
                     crash()
                 }else {
                     fuel += o.fuel
+                    document.getElementById("getFuel").play()
                     cars.splice(cars.indexOf(o),1)
                 }
             }
@@ -123,17 +141,15 @@ function enemyCar(x,y,color,width,height,index){
 
         objects.forEach(o => {
             if(!o.isTrigger){
-                if(this.crashWith(o,[this.velX,0])){
+                if(this.crashWith(o,[this.velX + 20,0]) || this.crashWith(o,[this.velX - 20,0])){
                     this.velX = 0
                 }
             }
         })
 
         cars.forEach(o => {
-            if(this.crashWith(o,[this.velX,0]) && o != this){
-                if(o.fuel === undefined){
-                    this.velX = 0
-                }
+            if((this.crashWith(o,[this.velX + 20,0]) || this.crashWith(o,[this.velX - 20,0])) && o != this){
+                this.velX = 0
             }
         })
 
@@ -172,7 +188,7 @@ function spawn(){
         for(let i=0; i < Math.floor(Math.random() * 2) + 1; i++){
             let way = Math.floor(Math.random() * 3)
             let new_car = null
-            if(Math.floor(Math.random() * 10) != 0){
+            if(Math.floor(Math.random() * 4) != 0){
                 const path = "./sprites/enemyCar" + (Math.floor(Math.random() * 5)+1).toString() + ".png"
                 new_car = new enemyCar((way+1) * 100 + 25, -50, path,20+Math.floor(Math.random() * 10),45+Math.floor(Math.random() * 10), cars.length)
             }else {
@@ -186,7 +202,7 @@ function spawn(){
                 }
             })
 
-            if(can) cars.push(new_car)
+            if(can && cars.length < 5) cars.push(new_car)
         }
         
     }
