@@ -1,4 +1,4 @@
-let isStarted = false
+let isStarted = 0
 let player
 let objects = []
 let cars = []
@@ -6,7 +6,7 @@ let fuel = 100
 let speed = 0
 let race = 100
 let crashed = false
-let raceLength = 10
+let raceLength = 2
 let keys = {}
 
 let gameArea = {
@@ -29,23 +29,44 @@ let gameArea = {
 //main functions
 function Start() {
     gameArea.start()
-    objects[0] = new object(0,-window.innerHeight,"red",100,window.innerHeight+20)
-    objects[1] = new object(0,0,"red",100,window.innerHeight+20)
-    objects[2] = new object(400,-window.innerHeight,"red",100,window.innerHeight+20)
-    objects[3] = new object(400,0,"red",100,window.innerHeight+20)
-    cars[0] = new enemyCar(100,-50,"yellow",50,50,0)
-    player = new car(225,window.innerHeight-100,"green",50,50)
+    objects[0] = new object(0,-window.innerHeight,"./sprites/leftCorner.png",100,window.innerHeight+20)
+    objects[1] = new object(0,0,"./sprites/leftCorner.png",100,window.innerHeight+20)
+    objects[2] = new object(400,-window.innerHeight,"./sprites/rightCorner.png",100,window.innerHeight+20)
+    objects[3] = new object(400,0,"./sprites/rightCorner.png",100,window.innerHeight+20)
+    objects[4] = new object(100,0,"./sprites/road.png",300,window.innerHeight+20,true)
+    objects[5] = new object(100,-window.innerHeight,"./sprites/road.png",300,window.innerHeight+20,true)
+    cars[0] = new enemyCar(100,-50,"./sprites/enemyCar1.png",25,50,0)
+    player = new car(233,window.innerHeight-100,"./sprites/car.png",27,48)
 }
 
 function Update() {
-    gameArea.clear()
-    if(!isStarted){
+    if(isStarted != 2) gameArea.clear()
+    if(isStarted == 0){
         writeText("ROAD FIGHTER", window.innerWidth/2-270,window.innerHeight/2-140,"70px","white")
         writeText("Press ENTER to START", window.innerWidth/2-180,window.innerHeight/2+50,"30px","white")
-    }else{
-        race -= speed /(4000 * raceLength)
+    }else if(isStarted == 1){
+        if(race - speed /(4000 * raceLength) <= 0){
+            //YOU WIN!
+            writeText("YOU WIN!", 600,window.innerHeight/2-50,"50px","white")
+            isStarted = 2
+            window.stop()
+        }else {
+            race -= speed /(4000 * raceLength)
+        }
+
+        if(fuel <= 0){
+            //YOU LOSE!
+            writeText("YOU LOSE!", 600,window.innerHeight/2-50,"50px","white")
+            isStarted = 2
+            window.stop()
+        }
+        
         if((crashed || !keys[32]) && speed > 0){
             speed -= 2
+        }
+
+        if(speed > 0 && fuel > 0){
+            fuel -= 0.05
         }
 
         objects.forEach(o => {
@@ -60,21 +81,27 @@ function Update() {
             e.update()
         })
 
-        
-
         spawn()
 
         if(speed > 0)player.newPos()
 
         if(speed <= 0 && crashed){
-            player.x = 225
+            cars = []
+            player.x = 233
             crashed = false
-            fuel -= 5
+
+            if(fuel >= 5) {
+                fuel -= 5
+            }else{
+                fuel = 0
+            }
         }
 
-        writeText("SPEED : " + speed + " km/h", 30,30,"20px","white")
-        writeText("FUEL : " + Math.round(fuel), 250,30,"20px","white")
-        writeText("RACE : " + Math.round(race), 400,30,"20px","white")
+        writeText("SPEED : " + speed + " km/h", 600,30,"20px","white")
+        writeText("FUEL : " + Math.round(fuel), 600,130,"20px","white")
+        writeText("RACE : " + Math.round(race), 600,230,"20px","white")
+
+        drawRace()
     }
 }
 
@@ -82,22 +109,24 @@ function crash(){
     console.log("player is crashed")
     crashed = true
 }
+
 //utils
 
 document.addEventListener('keydown', function(event) {
     keys[event.keyCode] = true
-    if(keys[13] && !isStarted) {
-        isStarted = true
+    if(keys[13] && isStarted == 0) {
+        isStarted = 1
     }
-    if(keys[39] && isStarted) {
+    if(keys[39] && isStarted == 1 && fuel > 0) {
         player.velX = speed / 80
     }
-    if(keys[37] && isStarted) {
+    if(keys[37] && isStarted == 1 && fuel > 0) {
         player.velX = -speed/80
     }
-    if(keys[32] && isStarted && !crashed && fuel > 0) {
-        fuel -= 0.1
-        if(speed < 400) speed += 10
+    if(keys[32] && isStarted == 1 && !crashed && fuel > 0) {
+        if(speed < 400) {
+            speed += 10
+        }
         
     }
 },false )
