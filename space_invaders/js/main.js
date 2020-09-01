@@ -295,18 +295,21 @@ function update() {
 }
 
 document.addEventListener("keydown", (event) => {
+  if (event.key == "Escape") {
+    window.open("../index.html", "_self")
+  }
   if (event.key == "Enter" && game == false){
     game = true 
   } else if (game == true) {
     if (event.key == "ArrowLeft") {
       ship.move(0)
-    } else if (event.key == "ArrowRight"){
+    } else if (event.key == "ArrowRight") {
       ship.move(1)
     } else if (event.key == " " && shot == false) {
       let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y, -3, "ship")
       bullets.push(bullet)
       shot = true
-    }
+    } 
   }
 })
 

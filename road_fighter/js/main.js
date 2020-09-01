@@ -29,12 +29,12 @@ let gameArea = {
 //main functions
 function Start() {
     gameArea.start()
-    objects[0] = new object(0,-window.innerHeight,"./res/sprites/leftCorner.png",100,window.innerHeight+20)
-    objects[1] = new object(0,0,"./res/sprites/leftCorner.png",100,window.innerHeight+20)
-    objects[2] = new object(400,-window.innerHeight,"./res/sprites/rightCorner.png",100,window.innerHeight+20)
-    objects[3] = new object(400,0,"./res/sprites/rightCorner.png",100,window.innerHeight+20)
-    objects[4] = new object(100,0,"./res/sprites/road.png",300,window.innerHeight+20,true)
-    objects[5] = new object(100,-window.innerHeight,"./res/sprites/road.png",300,window.innerHeight+20,true)
+    objects[0] = new object(0,-window.innerHeight,"./res/sprites/leftCorner.png",100,window.innerHeight+5)
+    objects[1] = new object(0,0,"./res/sprites/leftCorner.png",100,window.innerHeight+5)
+    objects[2] = new object(400,-window.innerHeight,"./res/sprites/rightCorner.png",100,window.innerHeight+5)
+    objects[3] = new object(400,0,"./res/sprites/rightCorner.png",100,window.innerHeight+5)
+    objects[4] = new object(100,0,"./res/sprites/road.png",300,window.innerHeight+5,true)
+    objects[5] = new object(100,-window.innerHeight,"./res/sprites/road.png",300,window.innerHeight+5,true)
     cars[0] = new enemyCar(100,-50,"./res/sprites/enemyCar1.png",25,50,0)
     player = new car(233,window.innerHeight-100,"./res/sprites/car.png",27,48)
 }
@@ -141,6 +141,9 @@ function crash(){
 //utils
 
 document.addEventListener('keydown', function(event) {
+    if (event.key == "Escape") {
+        window.open("../index.html", "_self")
+    }
     keys[event.keyCode] = true
     if(keys[13] && isStarted == 0) {
         isStarted = 1

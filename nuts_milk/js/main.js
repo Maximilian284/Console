@@ -151,6 +151,9 @@ function Update() {
 //utils
 let keys = {}
 document.addEventListener('keydown', function(event) {
+    if (event.key == "Escape") {
+        window.open("../index.html", "_self")
+    }
     keys[event.keyCode] = true
     if(event.keyCode == 13 && !isStarted) {
         document.getElementById("soundtrack").play()
