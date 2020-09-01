@@ -1,26 +1,9 @@
 function writeText(text, x, y, size, color, style = "normal") {
     let ctx = gameArea.context
-    ctx.font = style + " " + size + " courier new"
+    ctx.font = style + " " + size + " Nuts Font"
     ctx.fillStyle = color
     ctx.fillText(text, x, y)
 }
-
-function sound(src) {
-    this.sound = document.createElement("audio")
-    this.sound.src = src
-    this.sound.setAttribute("preload", "auto")
-    this.sound.setAttribute("controls", "none")
-    this.sound.setAttribute("muted", "muted")
-    this.sound.setAttribute("autoplay", true)
-    this.sound.style.display = "none"
-    document.body.appendChild(this.sound)
-    this.play = function(){
-      this.sound.play()
-    }
-    this.stop = function(){
-      this.sound.pause()
-    }
-  }
 
 function component(x, y, sprite, width, height, map_limits) {
     this.width = width
