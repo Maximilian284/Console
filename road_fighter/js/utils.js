@@ -2,7 +2,7 @@ let timeSpawn  =0
 let rate = 4000/(speed + 0.01)
 function writeText(text, x, y, size, color, style = "normal") {
     let ctx = gameArea.context
-    ctx.font = style + " " + size + " courier new"
+    ctx.font = style + " " + size + " Space Invaders"
     ctx.fillStyle = color
     ctx.fillText(text, x, y)
 }
@@ -189,10 +189,10 @@ function spawn(){
             let way = Math.floor(Math.random() * 3)
             let new_car = null
             if(Math.floor(Math.random() * 4) != 0){
-                const path = "./sprites/enemyCar" + (Math.floor(Math.random() * 5)+1).toString() + ".png"
+                const path = "./res/sprites/enemyCar" + (Math.floor(Math.random() * 5)+1).toString() + ".png"
                 new_car = new enemyCar((way+1) * 100 + 25, -50, path,20+Math.floor(Math.random() * 10),45+Math.floor(Math.random() * 10), cars.length)
             }else {
-                new_car = new fuelCar((way+1) * 100 + 25, -50, "./sprites/fuelCar.png",23,40, cars.length)
+                new_car = new fuelCar((way+1) * 100 + 25, -50, "./res/sprites/fuelCar.png",23,40, cars.length)
             }
             let can = true
             cars.forEach(c => {
