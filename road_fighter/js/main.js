@@ -29,21 +29,26 @@ let gameArea = {
 //main functions
 function Start() {
     gameArea.start()
-    objects[0] = new object(0,-window.innerHeight,"./sprites/leftCorner.png",100,window.innerHeight+20)
-    objects[1] = new object(0,0,"./sprites/leftCorner.png",100,window.innerHeight+20)
-    objects[2] = new object(400,-window.innerHeight,"./sprites/rightCorner.png",100,window.innerHeight+20)
-    objects[3] = new object(400,0,"./sprites/rightCorner.png",100,window.innerHeight+20)
-    objects[4] = new object(100,0,"./sprites/road.png",300,window.innerHeight+20,true)
-    objects[5] = new object(100,-window.innerHeight,"./sprites/road.png",300,window.innerHeight+20,true)
-    cars[0] = new enemyCar(100,-50,"./sprites/enemyCar1.png",25,50,0)
-    player = new car(233,window.innerHeight-100,"./sprites/car.png",27,48)
+    objects[0] = new object(0,-window.innerHeight,"./res/sprites/leftCorner.png",100,window.innerHeight+20)
+    objects[1] = new object(0,0,"./res/sprites/leftCorner.png",100,window.innerHeight+20)
+    objects[2] = new object(400,-window.innerHeight,"./res/sprites/rightCorner.png",100,window.innerHeight+20)
+    objects[3] = new object(400,0,"./res/sprites/rightCorner.png",100,window.innerHeight+20)
+    objects[4] = new object(100,0,"./res/sprites/road.png",300,window.innerHeight+20,true)
+    objects[5] = new object(100,-window.innerHeight,"./res/sprites/road.png",300,window.innerHeight+20,true)
+    cars[0] = new enemyCar(100,-50,"./res/sprites/enemyCar1.png",25,50,0)
+    player = new car(233,window.innerHeight-100,"./res/sprites/car.png",27,48)
 }
 
 function Update() {
     if(isStarted != 2) gameArea.clear()
     if(isStarted == 0){
-        writeText("ROAD FIGHTER", window.innerWidth/2-270,window.innerHeight/2-140,"70px","white")
-        writeText("Press ENTER to START", window.innerWidth/2-180,window.innerHeight/2+50,"30px","white")
+        let image = new Image()
+        image.src = "./res/sprites/title.png"
+        gameArea.context.drawImage(image,
+            window.innerWidth/2 - 271,
+            window.innerHeight/2 - 250,
+            542, 199)
+        writeText("Press ENTER to START", window.innerWidth/2-150,window.innerHeight/2+50,"30px","white")
     }else if(isStarted == 1){
         document.getElementById("engine").volume = (speed / 400) - ((speed / 400) * 0.2)
         
