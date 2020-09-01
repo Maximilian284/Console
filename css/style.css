@@ -13,7 +13,7 @@ body {
   margin-top: 5px;
 }
 
-#space-invaders-img {
+.miniature {
   width: 320px;
   height: 180px;
 }
