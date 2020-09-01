@@ -147,6 +147,7 @@ function update() {
 
       for (let j = 0; j < aliens.length; j++){
         if (bullets[i].hit(aliens[j]) && bullets[i].shooter == "ship"){      
+          document.getElementById("kill").play()
           score = parseInt(score)
           score += aliens[j].points
           score = score.toString()
@@ -164,6 +165,7 @@ function update() {
         }
         if (bullets[i].hit(ship)){
           shipLifes--
+          document.getElementById("death").play()
           bullets.splice(i, 1)
           if (shipLifes == 0){
             win = 0
@@ -306,6 +308,7 @@ document.addEventListener("keydown", (event) => {
     } else if (event.key == " " && shot == false) {
       let bullet = new Bullet(ship.x + ship.width / 2 - 1, ship.y, -3, "ship")
       bullets.push(bullet)
+      document.getElementById("shoot").play()
       shot = true
     }
   }

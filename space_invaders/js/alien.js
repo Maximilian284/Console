@@ -38,6 +38,7 @@ function Alien (x, y, type) {
   this.shot = function(){
     let bullet = new Bullet(this.x + this.width / 2, this.y, 3, "alien")
     bullets.push(bullet)
+    document.getElementById("shoot").play()
   }
 
   this.move = function(moveX, moveY) {
